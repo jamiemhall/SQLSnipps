@@ -1,0 +1,11 @@
+## Use the dynamic management view sys.dm_db_partition_stats; this returns one row per partition for an index
+## This query is fast, effecient, and doesn't lock the target table, but does only return the approximate number of rows
+
+DECLARE @TableName sysname
+SET @TableName = '<SCHEMA.TABLENAME>'
+
+SELECT OBJECT_NAME(object_id), SUM(row_count) AS rows
+FROM sys.dm_db_partition_stats
+WHERE object_id = OBJECT_ID(@TableName)
+AND index_id < 2
+GROUP BY OBJECT_NAME(object_id);
